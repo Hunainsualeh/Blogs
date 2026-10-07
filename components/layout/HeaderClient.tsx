@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { NavItem } from "@/config/navigation";
@@ -119,9 +118,6 @@ export function HeaderClient({ navigation, categories, menuData }: HeaderClientP
               <span className="hidden text-[13px] font-medium xl:inline">Search</span>
               <kbd className="hidden rounded-sm border border-line px-1.5 font-mono text-[10px] text-ink-subtle xl:inline">⌘K</kbd>
             </button>
-            <Link href={utilityNavigation.login.href} className="hidden h-10 items-center rounded-md px-3 text-[13.5px] font-medium text-ink-muted hover:text-ink md:inline-flex">
-              {utilityNavigation.login.label}
-            </Link>
             <Button href={utilityNavigation.writeForUs.href} size="sm" className="hidden sm:inline-flex" icon={<PenIcon size={15} />} iconPosition="start">
               {utilityNavigation.writeForUs.label}
             </Button>
