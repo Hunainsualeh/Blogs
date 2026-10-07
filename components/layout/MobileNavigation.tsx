@@ -8,7 +8,7 @@ import { articleHref, searchHref } from "@/lib/routes";
 import { padRank } from "@/lib/utils";
 import type { MenuData } from "@/types/navigation";
 import { Button } from "@/components/ui/Button";
-import { ArrowRightIcon, PenIcon, UserIcon } from "@/components/ui/Icons";
+import { ArrowRightIcon, PenIcon } from "@/components/ui/Icons";
 
 type MobileNavigationProps = {
   id: string;
@@ -21,14 +21,9 @@ export function MobileNavigation({ id, items, data, onNavigate }: MobileNavigati
   return (
     <div id={id} className="fixed inset-x-0 bottom-0 top-[var(--header-height,64px)] z-40 overflow-y-auto border-t border-line bg-white [animation:fade-in_200ms_ease_both] lg:hidden">
       <div className="container-site flex flex-col gap-10 py-8">
-        <div className="grid grid-cols-2 gap-3">
-          <Button href={utilityNavigation.writeForUs.href} onClick={onNavigate} icon={<PenIcon size={16} />} iconPosition="start">
-            Write for Us
-          </Button>
-          <Button href={utilityNavigation.login.href} onClick={onNavigate} variant="outline" icon={<UserIcon size={16} />} iconPosition="start">
-            Sign in
-          </Button>
-        </div>
+        <Button href={utilityNavigation.writeForUs.href} onClick={onNavigate} icon={<PenIcon size={16} />} iconPosition="start">
+          Write for Us
+        </Button>
 
         <nav aria-label="All sections">
           <p className="kicker mb-3 text-ink-subtle">Sections</p>

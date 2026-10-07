@@ -20,7 +20,6 @@ export const categoryNavigation: NavItem[] = primaryNavigation.slice(1);
 
 export const utilityNavigation = {
   search: { label: "Search", href: "/search" },
-  login: { label: "Sign in", href: "/login" },
   writeForUs: { label: "Write for Us", href: "/write-for-us" },
   submit: { label: "Start writing", href: "/submit" },
 } as const;
@@ -63,7 +62,6 @@ export const footerNavigation: { title: string; links: NavItem[] }[] = [
       { label: "Write for Us", href: "/write-for-us" },
       { label: "Submit an article", href: "/submit" },
       { label: "Editorial standards", href: "/about#standards" },
-      { label: "Sign in", href: "/login" },
     ],
   },
   {

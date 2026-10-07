@@ -37,8 +37,8 @@ export const blockCatalog: BlockCatalogEntry[] = [
   { kind: "divider", label: "Divider", description: "Visual section break" },
 ];
 
-export function createBlock(kind: BlockKind): ContentBlock {
-  const id = createId("blk");
+export function createBlock(kind: BlockKind, fixedId?: string): ContentBlock {
+  const id = fixedId ?? createId("blk");
   switch (kind) {
     case "paragraph":
       return { id, type: "paragraph", content: "" };
@@ -105,9 +105,9 @@ export const templates: { key: TemplateKey; label: string; description: string; 
   { key: "blank", label: "Blank page", description: "Start with a single paragraph", kinds: ["paragraph"] },
 ];
 
-export function templateBlocks(key: TemplateKey) {
+export function templateBlocks(key: TemplateKey, stableIds = false) {
   const template = templates.find((item) => item.key === key) ?? templates[0];
-  return template.kinds.map(createBlock);
+  return template.kinds.map((kind, index) => createBlock(kind, stableIds ? `tpl-${key}-${index}` : undefined));
 }
 
 export function emptyDraft(): SubmissionDraft {
@@ -117,7 +117,7 @@ export function emptyDraft(): SubmissionDraft {
     category: "",
     tags: [],
     featuredImage: null,
-    content: templateBlocks("feature"),
+    content: templateBlocks("feature", true),
     author: { name: "", email: "", bio: "", profileUrl: "" },
   };
 }
