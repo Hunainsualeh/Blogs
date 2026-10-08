@@ -12,7 +12,7 @@ export function PostList({ articles, ranked = false }: { articles: ArticleWithRe
       {articles.map((article, index) => (
         <li key={article.id} className="group relative flex gap-3.5">
           <span className="relative h-[75px] w-[75px] shrink-0 overflow-visible">
-            <span className="relative block h-full w-full overflow-hidden rounded-sm bg-surface-muted">
+            <span className="img-shimmer relative block h-full w-full overflow-hidden rounded-sm">
               <Image src={article.featuredImage.src} alt="" fill sizes="75px" className="object-cover" />
             </span>
             {ranked ? (

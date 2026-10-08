@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { CSSProperties } from "react";
+import { preconnect } from "react-dom";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { theme, themeCssVariables } from "@/config/theme";
@@ -37,6 +38,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  preconnect("https://images.unsplash.com");
   return (
     <html
       lang={siteConfig.language}

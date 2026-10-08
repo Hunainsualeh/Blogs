@@ -29,7 +29,7 @@ export default async function CategoriesPage() {
           return (
             <li key={category.slug}>
               <Link href={categoryHref(category.slug)} className="group block h-full overflow-hidden rounded-sm border border-line bg-white transition-shadow hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.25)]">
-                <span className="relative block aspect-[16/9] bg-surface-muted">
+                <span className="img-shimmer relative block aspect-[16/9]">
                   {cover ? <Image src={cover.featuredImage.src} alt="" fill sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw" className="object-cover" /> : null}
                   <span className="absolute right-3 top-3 rounded-sm bg-brand px-2.5 py-1 text-[12px] font-medium text-white">{counts[category.slug] ?? 0} articles</span>
                 </span>

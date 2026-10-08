@@ -94,7 +94,7 @@ const baseCategories: Omit<Category, "order" | "showOnHome" | "showInNav">[] = [
 export const defaultCategories: Category[] = baseCategories.map((category, index) => ({
   ...category,
   order: index,
-  showOnHome: true,
+  showOnHome: index < 6,
   showInNav: true,
 }));
 

@@ -26,7 +26,7 @@ type ArticleImageProps = {
 
 export function ArticleImage({ src, alt, ratio = "3/2", sizes, priority = false, zoom = true, className, imageClassName }: ArticleImageProps) {
   return (
-    <div className={cn("relative overflow-hidden rounded-sm bg-surface-muted", ratioClasses[ratio], className)}>
+    <div className={cn("img-shimmer relative overflow-hidden rounded-sm", ratioClasses[ratio], className)}>
       <Image
         src={src}
         alt={alt}
