@@ -17,11 +17,8 @@ async function Editor() {
 
 export default function SubmitPage() {
   return (
-    <div className="container-site pt-2">
-      <h1 className="sr-only">Write and submit your article</h1>
-      <Suspense>
-        <Editor />
-      </Suspense>
-    </div>
+    <Suspense>
+      <Editor />
+    </Suspense>
   );
 }

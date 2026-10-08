@@ -23,6 +23,7 @@ type BlockListProps = {
   onUpdate: (id: string, patch: Partial<ContentBlock>) => void;
   onRemove: (id: string) => void;
   onMove: (id: string, direction: -1 | 1) => void;
+  mode?: "between" | "end";
 };
 
 function BlockEditor({ block, onChange, error }: { block: ContentBlock; onChange: (patch: Partial<ContentBlock>) => void; error?: string }) {
@@ -56,16 +57,17 @@ function BlockEditor({ block, onChange, error }: { block: ContentBlock; onChange
   }
 }
 
-export function BlockList({ blocks, errors, onInsert, onUpdate, onRemove, onMove }: BlockListProps) {
+export function BlockList({ blocks, errors, onInsert, onUpdate, onRemove, onMove, mode = "between" }: BlockListProps) {
+  const between = mode === "between";
   const controlClass = "inline-flex h-7 w-7 items-center justify-center rounded-sm text-ink-subtle hover:bg-surface-muted hover:text-ink disabled:opacity-30 disabled:hover:bg-transparent";
   return (
     <div>
-      <InsertBlockMenu onInsert={(block) => onInsert(0, block)} />
+      {between ? <InsertBlockMenu onInsert={(block) => onInsert(0, block)} /> : null}
       {blocks.map((block, index) => {
         const error = errors[`block:${block.id}`];
         return (
-          <div key={block.id}>
-            <div id={`block-${block.id}`} className={cn("group/block relative rounded-md border px-4 pb-4 pt-9 transition-colors sm:px-5", error ? "border-danger/50 bg-[#FFFBFA]" : "border-transparent hover:border-line focus-within:border-line")}>
+          <div key={block.id} className={between ? undefined : "mb-3"}>
+            <div id={`block-${block.id}`} className={cn("group/block relative rounded-md border px-4 pb-4 pt-9 transition-colors sm:px-5", error ? "border-danger/50 bg-[#FFFBFA]" : between ? "border-transparent hover:border-line focus-within:border-line" : "border-line bg-white focus-within:border-brand")}>
               <div className="absolute inset-x-3 top-1.5 flex items-center justify-between">
                 <span className="kicker !text-[10px] text-ink-subtle">
                   {block.type === "heading" ? `Heading ${block.level}` : block.type === "list" ? (block.style === "ordered" ? "Numbered list" : "Bulleted list") : blockTypeLabels[block.type]}
@@ -85,10 +87,15 @@ export function BlockList({ blocks, errors, onInsert, onUpdate, onRemove, onMove
               <BlockEditor block={block} onChange={(patch) => onUpdate(block.id, patch)} error={error} />
               {error && block.type !== "image" && block.type !== "link" && block.type !== "embed" ? <p className="mt-2 text-[13px] text-danger">{error}</p> : null}
             </div>
-            <InsertBlockMenu onInsert={(newBlock) => onInsert(index + 1, newBlock)} />
+            {between ? <InsertBlockMenu onInsert={(newBlock) => onInsert(index + 1, newBlock)} /> : null}
           </div>
         );
       })}
+      {!between && blocks.length > 0 ? (
+        <div className="pt-2">
+          <InsertBlockMenu variant="button" label="Add a block: heading, image, list, quote and more" onInsert={(block) => onInsert(blocks.length, block)} />
+        </div>
+      ) : null}
       {blocks.length === 0 ? (
         <div className="py-6">
           <InsertBlockMenu variant="button" label="Add your first block" onInsert={(block) => onInsert(0, block)} />

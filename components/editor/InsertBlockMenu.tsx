@@ -28,7 +28,7 @@ export function InsertBlockMenu({ onInsert, variant = "line", label = "Add block
       items={items}
       columns={2}
       align={variant === "line" ? "center" : "start"}
-      className={variant === "line" ? "flex w-full justify-center" : undefined}
+      className={variant === "line" ? "flex w-full justify-center" : "block w-full"}
       trigger={({ open, toggle, id }) =>
         variant === "line" ? (
           <div className="group/insert relative flex h-8 w-full items-center justify-center">

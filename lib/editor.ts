@@ -87,9 +87,15 @@ export const blockTypeLabels: Record<ContentBlockType, string> = {
   embed: "Embed",
 };
 
-export type TemplateKey = "feature" | "guide" | "blank";
+export type TemplateKey = "starter" | "feature" | "guide" | "blank";
 
 export const templates: { key: TemplateKey; label: string; description: string; kinds: BlockKind[] }[] = [
+  {
+    key: "starter",
+    label: "Simple article",
+    description: "Introduction, one section and a conclusion",
+    kinds: ["paragraph", "heading2", "paragraph", "heading2", "paragraph"],
+  },
   {
     key: "feature",
     label: "Feature article",
@@ -117,7 +123,7 @@ export function emptyDraft(): SubmissionDraft {
     category: "",
     tags: [],
     featuredImage: null,
-    content: templateBlocks("feature", true),
+    content: templateBlocks("starter", true),
     author: { name: "", email: "", bio: "", profileUrl: "" },
   };
 }

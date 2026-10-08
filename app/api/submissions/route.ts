@@ -24,6 +24,9 @@ export async function POST(request: Request) {
   if (!raw || typeof raw !== "object" || !Array.isArray(raw.content) || !raw.author || typeof raw.author !== "object") {
     return NextResponse.json({ ok: false, error: "The submission is incomplete." }, { status: 400 });
   }
+  if (raw.agreed !== true) {
+    return NextResponse.json({ ok: false, error: "Please confirm the originality statement before submitting.", errors: { agreed: "Please confirm the statement above before submitting." } }, { status: 422 });
+  }
   if (typeof raw.website === "string" && raw.website.trim()) {
     return NextResponse.json({ ok: true, receipt: { id: createSubmissionId(), title: "Submission received", status: "submitted", createdAt: new Date().toISOString(), persisted: storageMode } }, { status: 201 });
   }
