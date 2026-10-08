@@ -104,7 +104,7 @@ export function articleJsonLd(article: Omit<ArticleFull, "content">) {
     publisher: {
       "@type": "Organization",
       name: siteConfig.name,
-      logo: { "@type": "ImageObject", url: absoluteUrl("/icon.svg") },
+      logo: { "@type": "ImageObject", url: absoluteUrl("/logo-mark.png") },
     },
   };
 }
@@ -138,7 +138,7 @@ export function organizationJsonLd() {
     "@type": "Organization",
     name: siteConfig.name,
     url: siteConfig.url,
-    logo: absoluteUrl("/icon.svg"),
+    logo: absoluteUrl("/logo-mark.png"),
     description: siteConfig.description,
   };
 }
