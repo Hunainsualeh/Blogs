@@ -10,7 +10,7 @@ export function DesktopNavigation({ items, className }: { items: NavItem[]; clas
   return (
     <nav aria-label="Main" className={className}>
       <ul className="flex items-stretch">
-        {items.map((item) => {
+        {items.filter((item) => item.href !== "/write-for-us").map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
             <li key={item.href}>

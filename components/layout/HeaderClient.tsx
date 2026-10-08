@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { primaryNavigation } from "@/config/navigation";
-import { BoltIcon, SearchIcon } from "@/components/ui/Icons";
+import { primaryNavigation, utilityNavigation } from "@/config/navigation";
+import { Button } from "@/components/ui/Button";
+import { BoltIcon, PenIcon, SearchIcon } from "@/components/ui/Icons";
 import { Logo } from "@/components/ui/Logo";
 import { CategoryBar } from "./CategoryBar";
 import { DesktopNavigation } from "./DesktopNavigation";
@@ -123,10 +124,15 @@ export function HeaderClient({ categories, breaking }: { categories: NavCategory
         <div className="container-site hidden lg:block">
           <div className="flex items-stretch justify-between bg-dark">
             <DesktopNavigation items={primaryNavigation} />
-            <button type="button" onClick={() => setSearchOpen(true)} className="my-2.5 mr-3 flex w-[240px] items-center justify-between rounded-full bg-white/10 px-4 text-[13px] text-white/70 hover:bg-white/15" aria-label="Search articles">
-              Search for
-              <SearchIcon size={16} />
-            </button>
+            <div className="flex items-center gap-3 pr-3">
+              <button type="button" onClick={() => setSearchOpen(true)} className="flex h-9 w-[200px] items-center justify-between rounded-full bg-white/10 px-4 text-[13px] text-white/70 hover:bg-white/15" aria-label="Search articles">
+                Search for
+                <SearchIcon size={16} />
+              </button>
+              <Button href={utilityNavigation.writeForUs.href} size="sm" className="!h-9 !rounded-full !border-white !px-4 shadow-[0_0_0_3px_rgba(255,255,255,0.14)]" icon={<PenIcon size={14} />} iconPosition="start">
+                {utilityNavigation.writeForUs.label}
+              </Button>
+            </div>
           </div>
         </div>
         <div className="border-b border-line bg-white lg:border-b-0 lg:bg-transparent">
