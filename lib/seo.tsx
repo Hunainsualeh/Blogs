@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { ArticleWithRelations } from "@/types/article";
+import type { ArticleFull } from "@/types/article";
 import type { Category } from "@/types/category";
 import { siteConfig } from "@/config/site";
 import { articleHref, categoryHref } from "./routes";
@@ -41,24 +41,36 @@ export function buildMetadata({
       card: "summary_large_image",
       title,
       description,
-      site: siteConfig.twitterHandle,
       ...(image ? { images: [image] } : {}),
     },
     robots: noIndex ? { index: false, follow: true } : undefined,
   };
 }
 
-export function articleImageUrl(src: string, width = 1600) {
-  return src.startsWith("https://images.unsplash.com/") ? `${src}?auto=format&fit=crop&w=${width}&q=80` : src;
+export function collectionJsonLd(name: string, description: string, path: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name,
+    description,
+    url: absoluteUrl(path),
+    isPartOf: { "@type": "WebSite", name: siteConfig.name, url: siteConfig.url },
+  };
 }
 
-export function articleMetadata(article: ArticleWithRelations): Metadata {
+export function articleImageUrl(src: string, width = 1600) {
+  if (src.startsWith("https://images.unsplash.com/")) return `${src}?auto=format&fit=crop&w=${width}&q=80`;
+  return src.startsWith("/") ? absoluteUrl(src) : src;
+}
+
+export function articleMetadata(article: Omit<ArticleFull, "content">): Metadata {
   const base = buildMetadata({
-    title: article.title,
-    description: article.excerpt,
+    title: article.seoTitle || article.title,
+    description: article.seoDescription || article.excerpt,
     path: articleHref(article.slug),
     image: articleImageUrl(article.featuredImage.src, 1200),
     type: "article",
+    noIndex: article.noIndex,
   });
   return {
     ...base,
@@ -76,19 +88,19 @@ export function articleMetadata(article: ArticleWithRelations): Metadata {
   };
 }
 
-export function articleJsonLd(article: ArticleWithRelations) {
+export function articleJsonLd(article: Omit<ArticleFull, "content">) {
   return {
     "@context": "https://schema.org",
-    "@type": "NewsArticle",
+    "@type": "Article",
     headline: article.title,
-    description: article.excerpt,
+    description: article.seoDescription || article.excerpt,
     image: [articleImageUrl(article.featuredImage.src, 1600)],
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
     articleSection: article.categoryInfo.name,
     keywords: article.tags.join(", "),
     mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(articleHref(article.slug)) },
-    author: [{ "@type": "Person", name: article.author.name, jobTitle: article.author.role }],
+    author: [{ "@type": article.author.kind === "contributor" ? "Person" : "Organization", name: article.author.name }],
     publisher: {
       "@type": "Organization",
       name: siteConfig.name,
@@ -117,6 +129,17 @@ export function categoryJsonLd(category: Category) {
     name: `${category.name} | ${siteConfig.name}`,
     description: category.description,
     url: absoluteUrl(categoryHref(category.slug)),
+  };
+}
+
+export function organizationJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: siteConfig.name,
+    url: siteConfig.url,
+    logo: absoluteUrl("/icon.svg"),
+    description: siteConfig.description,
   };
 }
 

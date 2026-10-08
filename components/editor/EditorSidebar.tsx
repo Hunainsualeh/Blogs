@@ -22,9 +22,11 @@ type EditorSidebarProps = {
   categories: Category[];
   submitting: boolean;
   onSubmit: () => void;
+  honeypot: string;
+  onHoneypot: (value: string) => void;
 };
 
-export function EditorSidebar({ draft, dispatch, errors, categories, submitting, onSubmit }: EditorSidebarProps) {
+export function EditorSidebar({ draft, dispatch, errors, categories, submitting, onSubmit, honeypot, onHoneypot }: EditorSidebarProps) {
   const category = categories.find((item) => item.slug === draft.category);
   const words = contentWordCount(draft.content);
   const checklist = [
@@ -74,6 +76,10 @@ export function EditorSidebar({ draft, dispatch, errors, categories, submitting,
         <Input id="author-name" label="Full name" required value={draft.author.name} onChange={(event) => dispatch({ type: "setAuthor", field: "name", value: event.target.value })} autoComplete="name" error={errors.authorName} />
         <Input id="author-email" label="Email" type="email" required value={draft.author.email} onChange={(event) => dispatch({ type: "setAuthor", field: "email", value: event.target.value })} autoComplete="email" hint="Only our editors will see this." error={errors.authorEmail} />
         <Textarea id="author-bio" label="Short bio" required rows={3} maxCount={SUBMISSION_LIMITS.bioMax} value={draft.author.bio} onChange={(event) => dispatch({ type: "setAuthor", field: "bio", value: event.target.value })} placeholder="One or two sentences about your expertise" error={errors.authorBio} />
+        <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+          <label htmlFor="website-url">Leave this field empty</label>
+          <input id="website-url" name="website" tabIndex={-1} autoComplete="off" value={honeypot} onChange={(event) => onHoneypot(event.target.value)} />
+        </div>
         <Input id="author-profile" label="Website or social profile" optional type="url" value={draft.author.profileUrl ?? ""} onChange={(event) => dispatch({ type: "setAuthor", field: "profileUrl", value: event.target.value })} placeholder="https://" error={errors.authorProfile} />
       </FormSection>
 
@@ -91,7 +97,7 @@ export function EditorSidebar({ draft, dispatch, errors, categories, submitting,
         <Button onClick={onSubmit} disabled={submitting} className="w-full">
           {submitting ? "Submitting..." : "Submit for review"}
         </Button>
-        <p className="text-[12.5px] leading-relaxed text-ink-subtle">Editors review every submission before publication. You will hear back within 5 to 7 working days.</p>
+        <p className="text-[12.5px] leading-relaxed text-ink-subtle">Editors review every submission before anything is published. We aim to reply within 5 to 7 working days.</p>
       </FormSection>
     </div>
   );

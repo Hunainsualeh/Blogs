@@ -49,7 +49,7 @@ export function SubmissionConfirmation({ receipt, onEdit, onStartNew }: Submissi
 
       <p className="mt-10 flex gap-3 rounded-md bg-surface-muted p-4 text-[13.5px] leading-relaxed text-ink-muted">
         <InfoIcon size={18} className="mt-0.5 shrink-0 text-brand" />
-        This build has no database connected yet. Your submission was validated and stored in server memory only, so it will be cleared when the server restarts. A copy of your draft stays saved in this browser.
+        Submitting does not guarantee publication. Please keep your submission ID. A copy of your draft also stays saved in this browser.
       </p>
 
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">

@@ -7,9 +7,11 @@ export const SUBMISSION_LIMITS = {
   bioMax: 400,
   maxTags: 5,
   tagMaxLength: 30,
-  minWords: 300,
+  minWords: 600,
   maxImageBytes: 4 * 1024 * 1024,
   maxImages: 12,
+  maxBlocks: 400,
+  maxBlockChars: 20000,
   acceptedImageTypes: ["image/jpeg", "image/png", "image/webp"],
 } as const;
 
@@ -24,4 +26,6 @@ export const STATUS_LABELS = {
 
 export const STATUS_FLOW = ["draft", "submitted", "under-review", "approved", "published"] as const;
 
-export const DRAFT_STORAGE_KEY = "northline:submission-draft:v1";
+export const DRAFT_STORAGE_KEY = "gid:submission-draft:v1";
+
+export const ARTICLES_PER_PAGE = 12;

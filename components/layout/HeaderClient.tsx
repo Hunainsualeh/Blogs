@@ -2,34 +2,23 @@
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { NavItem } from "@/config/navigation";
-import { utilityNavigation } from "@/config/navigation";
-import { cn } from "@/lib/utils";
-import type { MenuData } from "@/types/navigation";
+import { primaryNavigation, utilityNavigation } from "@/config/navigation";
 import { Button } from "@/components/ui/Button";
 import { PenIcon, SearchIcon } from "@/components/ui/Icons";
 import { Logo } from "@/components/ui/Logo";
 import { DesktopNavigation } from "./DesktopNavigation";
-import { MegaMenu } from "./MegaMenu";
 import { MenuButton } from "./MenuButton";
 import { MobileNavigation } from "./MobileNavigation";
 import { SearchOverlay } from "./SearchOverlay";
 
-type HeaderClientProps = {
-  navigation: NavItem[];
-  categories: NavItem[];
-  menuData: MenuData;
-};
+export type NavCategory = { slug: string; name: string };
 
-export function HeaderClient({ navigation, categories, menuData }: HeaderClientProps) {
+export function HeaderClient({ categories }: { categories: NavCategory[] }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const [lastPath, setLastPath] = useState(pathname);
   const headerRef = useRef<HTMLElement>(null);
-  const lastY = useRef(0);
 
   if (lastPath !== pathname) {
     setLastPath(pathname);
@@ -38,7 +27,7 @@ export function HeaderClient({ navigation, categories, menuData }: HeaderClientP
   }
 
   useEffect(() => {
-    if (!menuOpen || window.matchMedia("(min-width: 1024px)").matches) return;
+    if (!menuOpen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -47,30 +36,13 @@ export function HeaderClient({ navigation, categories, menuData }: HeaderClientP
   }, [menuOpen]);
 
   useEffect(() => {
-    function onScroll() {
-      const y = window.scrollY;
-      setScrolled(y > 8);
-      setHidden(y > 240 && y > lastY.current + 4);
-      if (y < lastY.current - 4) setHidden(false);
-      lastY.current = y;
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
     const element = headerRef.current;
     if (!element) return;
-    const update = () => document.documentElement.style.setProperty("--header-height", `${element.getBoundingClientRect().bottom}px`);
+    const update = () => document.documentElement.style.setProperty("--header-height", `${element.getBoundingClientRect().height}px`);
     update();
     const observer = new ResizeObserver(update);
     observer.observe(element);
-    window.addEventListener("scroll", update, { passive: true });
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", update);
-    };
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -94,49 +66,31 @@ export function HeaderClient({ navigation, categories, menuData }: HeaderClientP
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-brand focus:px-4 focus:py-2 focus:text-white">
         Skip to content
       </a>
-      <header
-        ref={headerRef}
-        className={cn(
-          "sticky top-0 z-50 bg-white transition-[transform,box-shadow] duration-300",
-          scrolled && "shadow-[0_1px_0_var(--theme-line),0_8px_24px_-20px_rgba(0,27,61,0.4)]",
-          hidden && !menuOpen && !searchOpen ? "-translate-y-full" : "translate-y-0",
-        )}
-      >
-        <div className={cn("container-site grid grid-cols-[1fr_auto_1fr] items-center transition-[height] duration-300", scrolled ? "h-14" : "h-16 sm:h-[72px]")}>
-          <div className="flex items-center">
-            <MenuButton open={menuOpen} onClick={() => setMenuOpen((value) => !value)} controls={menuId} />
-          </div>
+      <header ref={headerRef} className="sticky top-0 z-50 border-b border-line bg-white">
+        <div className="container-site flex h-16 items-center justify-between gap-4">
           <Logo />
-          <div className="flex items-center justify-end gap-1 sm:gap-2">
+          <DesktopNavigation items={primaryNavigation} categories={categories} className="hidden lg:block" />
+          <div className="flex items-center gap-1 sm:gap-2">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
               className="inline-flex h-10 items-center gap-2 rounded-md px-2.5 text-ink-muted hover:bg-surface-muted hover:text-ink"
-              aria-label="Search"
+              aria-label="Search articles"
             >
               <SearchIcon size={19} />
               <span className="hidden text-[13px] font-medium xl:inline">Search</span>
-              <kbd className="hidden rounded-sm border border-line px-1.5 font-mono text-[10px] text-ink-subtle xl:inline">⌘K</kbd>
             </button>
-            <Button href={utilityNavigation.writeForUs.href} size="sm" className="hidden sm:inline-flex" icon={<PenIcon size={15} />} iconPosition="start">
+            <Button href={utilityNavigation.writeForUs.href} size="sm" className="hidden md:inline-flex" icon={<PenIcon size={15} />} iconPosition="start">
               {utilityNavigation.writeForUs.label}
             </Button>
+            <div className="lg:hidden">
+              <MenuButton open={menuOpen} onClick={() => setMenuOpen((value) => !value)} controls={menuId} />
+            </div>
           </div>
         </div>
-        <div className="border-t border-line">
-          <div className="container-site">
-            <DesktopNavigation items={navigation} />
-          </div>
-        </div>
-        {menuOpen ? (
-          <>
-            <MegaMenu id={menuId} categories={categories} data={menuData} onNavigate={closeMenu} />
-            <MobileNavigation id={`${menuId}-mobile`} items={navigation} data={menuData} onNavigate={closeMenu} />
-            <div className="fixed inset-x-0 bottom-0 top-[var(--header-height)] -z-10 hidden bg-[#00142b]/30 lg:block" onClick={closeMenu} aria-hidden />
-          </>
-        ) : null}
+        {menuOpen ? <MobileNavigation id={menuId} items={primaryNavigation} categories={categories} onNavigate={closeMenu} /> : null}
       </header>
-      <SearchOverlay open={searchOpen} onClose={closeSearch} data={menuData} />
+      <SearchOverlay open={searchOpen} onClose={closeSearch} categories={categories} />
     </>
   );
 }

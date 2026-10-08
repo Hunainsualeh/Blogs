@@ -1,16 +1,22 @@
 import type { Author } from "@/types/user";
-import { unsplash } from "@/lib/images";
+import { categories } from "@/data/categories";
 
-export const authors: Author[] = [
-  { id: "a-maya-chen", slug: "maya-chen", name: "Maya Chen", role: "Lifestyle Editor", bio: "Maya writes about homes, habits and modern living. She previously edited a design magazine and believes small routines change everything.", avatar: unsplash("1438761681033-6461ffad8d80"), location: "San Francisco", social: [{ label: "X", href: "https://x.com/northlinemedia" }] },
-  { id: "a-daniel-okafor", slug: "daniel-okafor", name: "Daniel Okafor", role: "Business and Property Editor", bio: "Daniel leads business and real estate coverage, focusing on markets, housing and the economics of everyday decisions.", avatar: unsplash("1500648767791-00dcc994a43e"), location: "New York", social: [{ label: "LinkedIn", href: "https://www.linkedin.com/company/northlinemedia" }] },
-  { id: "a-sofia-alvarez", slug: "sofia-alvarez", name: "Sofia Alvarez", role: "Fashion Editor", bio: "Sofia covers style, sustainable fashion and the people behind the clothes. She has reported from fashion weeks in four continents.", avatar: unsplash("1494790108377-be9c29b29330"), location: "Milan" },
-  { id: "a-james-whitaker", slug: "james-whitaker", name: "James Whitaker", role: "Tech Editor", bio: "James reviews phones, laptops and software, and spends more time than is healthy reading chip roadmaps.", avatar: unsplash("1472099645785-5658abf4ff4e"), location: "London" },
-  { id: "a-priya-raman", slug: "priya-raman", name: "Priya Raman", role: "Education Correspondent", bio: "Priya is a former teacher who now reports on schools, universities and the future of learning.", avatar: unsplash("1531123897727-8f129e1688ce"), location: "Bengaluru" },
-  { id: "a-lucas-meyer", slug: "lucas-meyer", name: "Lucas Meyer", role: "Sports Writer", bio: "Lucas covers football, tennis and endurance sport, with a particular interest in training science and the business of leagues.", avatar: unsplash("1506794778202-cad84cf45f1d"), location: "Berlin" },
-  { id: "a-hannah-brooks", slug: "hannah-brooks", name: "Hannah Brooks", role: "Marketing and Platforms", bio: "Hannah writes about search, social platforms and the changing economics of reaching an audience online.", avatar: unsplash("1517841905240-472988babdf9"), location: "Chicago" },
-  { id: "a-omar-haddad", slug: "omar-haddad", name: "Omar Haddad", role: "Travel Editor", bio: "Omar has visited more than sixty countries and writes practical guides for travelers who want to go deeper without spending more.", avatar: unsplash("1507003211169-0a1dd7228f2d"), location: "Dubai" },
-  { id: "a-elena-rossi", slug: "elena-rossi", name: "Elena Rossi", role: "Health Correspondent", bio: "Elena reports on fitness, nutrition and medicine, translating research into advice readers can actually use.", avatar: unsplash("1573497019940-1c28c88b4f3e"), location: "Rome" },
-  { id: "a-noah-kim", slug: "noah-kim", name: "Noah Kim", role: "Contributing Writer", bio: "Noah is an engineer and writer who explains complex systems in plain language. He contributes features on AI and software.", avatar: unsplash("1599566150163-29194dcaad36"), location: "Seoul" },
-  { id: "a-isabel-moreno", slug: "isabel-moreno", name: "Isabel Moreno", role: "Food Editor", bio: "Isabel is a trained chef and recipe developer who tests every recipe at least three times before it reaches readers.", avatar: unsplash("1544005313-94ddf0286df2"), location: "Barcelona" },
-];
+export const editorialAuthor: Author = {
+  id: "a-editorial-team",
+  slug: "editorial-team",
+  name: "Global Insights Daily Editorial",
+  role: "Editorial team",
+  bio: "Articles from the Global Insights Daily editorial team. Every piece is reviewed against our editorial standards before it is published.",
+  kind: "desk",
+};
+
+export const deskAuthors: Author[] = categories.map((category) => ({
+  id: `a-${category.slug}-desk`,
+  slug: `${category.slug}-desk`,
+  name: `${category.name} Desk`,
+  role: "Editorial desk",
+  bio: `Articles from the ${category.name} desk at Global Insights Daily, reviewed by our editors before publication.`,
+  kind: "desk",
+}));
+
+export const seedAuthors: Author[] = [editorialAuthor, ...deskAuthors];

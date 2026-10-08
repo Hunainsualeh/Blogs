@@ -13,6 +13,7 @@ export function PreviewPanel({ draft, category }: { draft: SubmissionDraft; cate
       <p className="mb-8 flex items-center gap-2 rounded-md bg-brand-soft px-4 py-3 text-[13.5px] text-brand">
         <EyeIcon size={16} /> This is exactly how your article will look when published. Empty blocks are hidden.
       </p>
+      <div className="mx-auto max-w-[860px]">
       <ArticleHeader
         title={draft.title}
         excerpt={draft.excerpt}
@@ -22,7 +23,8 @@ export function PreviewPanel({ draft, category }: { draft: SubmissionDraft; cate
         image={draft.featuredImage}
         linkCategory={false}
       />
-      <ArticleBody blocks={draft.content} className="mt-12" />
+      <ArticleBody blocks={draft.content} className="mt-8" />
+      </div>
     </div>
   );
 }

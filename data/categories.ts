@@ -1,6 +1,6 @@
 import type { Category } from "@/types/category";
 
-export const categories: Category[] = [
+const baseCategories: Omit<Category, "order" | "showOnHome" | "showInNav">[] = [
   {
     slug: "tech",
     name: "Tech",
@@ -90,3 +90,12 @@ export const categories: Category[] = [
     topics: ["Football", "Basketball", "Tennis", "Running", "Training"],
   },
 ];
+
+export const defaultCategories: Category[] = baseCategories.map((category, index) => ({
+  ...category,
+  order: index,
+  showOnHome: true,
+  showInNav: true,
+}));
+
+export const categories = defaultCategories;

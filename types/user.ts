@@ -4,12 +4,9 @@ export type Author = {
   name: string;
   role: string;
   bio: string;
-  avatar: string;
-  location?: string;
-  social?: {
-    label: string;
-    href: string;
-  }[];
+  avatar?: string;
+  kind: "desk" | "contributor";
+  profileUrl?: string;
 };
 
 export type ContributorProfile = {

@@ -4,9 +4,7 @@ import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { theme, themeCssVariables } from "@/config/theme";
 import { monoFont, sansFont, serifFont } from "@/lib/fonts";
-import { JsonLd, websiteJsonLd } from "@/lib/seo";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -27,7 +25,6 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    site: siteConfig.twitterHandle,
     title: siteConfig.name,
     description: siteConfig.description,
   },
@@ -48,11 +45,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-screen flex-col">
         <JsonLd data={websiteJsonLd()} />
-        <Header />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <JsonLd data={organizationJsonLd()} />
+        {children}
       </body>
     </html>
   );

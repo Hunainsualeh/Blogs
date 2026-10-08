@@ -124,12 +124,22 @@ export type Article = {
   featured: boolean;
   trending: boolean;
   editorsPick: boolean;
+  popularRank?: number;
   views: number;
+  seoTitle?: string;
+  seoDescription?: string;
+  noIndex?: boolean;
+  source: "sample" | "admin" | "submission";
+  submissionId?: string;
 };
 
-export type ArticleWithRelations = Article & {
+export type ArticleWithRelations = Omit<Article, "content"> & {
   author: Author;
   categoryInfo: Category;
+};
+
+export type ArticleFull = ArticleWithRelations & {
+  content: ContentBlock[];
 };
 
 export type ArticleSummary = Pick<

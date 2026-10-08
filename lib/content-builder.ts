@@ -1,7 +1,7 @@
 import type { Article, ContentBlock } from "@/types/article";
 import type { ArticleSeed } from "@/data/seeds/types";
 import { contentPools } from "@/data/content-pools";
-import { getCategoryBySlug } from "@/data/category-lookup";
+import { defaultCategories } from "@/data/categories";
 import { unsplash } from "./images";
 import { categoryHref } from "./routes";
 import { hashString, readingTime, slugify } from "./utils";
@@ -22,7 +22,7 @@ function rotate<T>(items: T[], seed: number, count: number) {
 
 export function buildContent(seed: ArticleSeed, slug: string): ContentBlock[] {
   const pool = contentPools[seed.category];
-  const category = getCategoryBySlug(seed.category);
+  const category = defaultCategories.find((item) => item.slug === seed.category)!;
   const hash = hashString(slug);
   let counter = 0;
   const id = () => `${slug}-${(counter += 1)}`;
@@ -99,7 +99,7 @@ export function buildArticle(seed: ArticleSeed, index: number): Article {
     content,
     category: seed.category,
     tags: seed.tags,
-    authorId: `a-${seed.author}`,
+    authorId: `a-${seed.category}-desk`,
     status: "published",
     createdAt: new Date(published - 2 * DAY).toISOString(),
     publishedAt: new Date(published).toISOString(),
@@ -113,6 +113,8 @@ export function buildArticle(seed: ArticleSeed, index: number): Article {
     featured: flags.has("featured"),
     trending: flags.has("trending"),
     editorsPick: flags.has("editorsPick"),
-    views: seed.views,
+    popularRank: flags.has("trending") ? 10 + index : undefined,
+    views: 0,
+    source: "sample",
   };
 }

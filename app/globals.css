@@ -159,3 +159,112 @@
     transition-duration: 1ms !important;
   }
 }
+
+@layer components {
+  .ad-slot {
+    clear: both;
+    margin-block: 32px;
+    max-width: 100%;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .ad-slot .ad-label {
+    margin-bottom: 6px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--theme-ink-subtle);
+  }
+
+  .ad-slot .ad-box {
+    min-height: 100px;
+    background: var(--theme-surface-muted);
+  }
+
+  .ad-slot[data-format="rectangle"] .ad-box {
+    min-height: 250px;
+  }
+
+  .ad-slot[data-format="vertical"] .ad-box {
+    min-height: 600px;
+  }
+
+  .ad-slot[data-format="auto"] .ad-box {
+    min-height: 250px;
+  }
+
+  .ad-slot:has(ins.adsbygoogle[data-ad-status="unfilled"]) {
+    display: none;
+  }
+
+  .ad-slot:has(ins.adsbygoogle[data-ad-status="filled"]) .ad-box {
+    background: transparent;
+  }
+}
+
+@layer components {
+  .prose-page {
+    font-family: var(--font-serif-family), Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    color: #1c2636;
+  }
+
+  .prose-page > * + * {
+    margin-top: 1.1em;
+  }
+
+  .prose-page h2 {
+    margin-top: 2.2em;
+    font-family: var(--font-sans-family), system-ui, sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--theme-ink);
+    scroll-margin-top: 100px;
+  }
+
+  .prose-page h3 {
+    margin-top: 1.6em;
+    font-family: var(--font-sans-family), system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--theme-ink);
+  }
+
+  .prose-page ul,
+  .prose-page ol {
+    padding-left: 1.4em;
+  }
+
+  .prose-page ul {
+    list-style: disc;
+  }
+
+  .prose-page ol {
+    list-style: decimal;
+  }
+
+  .prose-page li + li {
+    margin-top: 0.45em;
+  }
+
+  .prose-page a {
+    color: var(--theme-brand);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgb(0 43 90 / 0.3);
+  }
+
+  .prose-page a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .prose-page strong {
+    font-weight: 600;
+    color: var(--theme-ink);
+  }
+}

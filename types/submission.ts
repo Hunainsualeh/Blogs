@@ -17,6 +17,8 @@ export type Submission = SubmissionDraft & {
   status: ArticleStatus;
   createdAt: string;
   updatedAt: string;
+  reviewNote?: string;
+  articleId?: string;
 };
 
 export type SubmissionReceipt = {
@@ -24,7 +26,7 @@ export type SubmissionReceipt = {
   title: string;
   status: ArticleStatus;
   createdAt: string;
-  persisted: "memory";
+  persisted: "file" | "kv";
 };
 
 export type FieldErrors = Partial<Record<string, string>>;

@@ -341,7 +341,7 @@ export const contentPools: Record<CategorySlug, CategoryContentPool> = {
     ],
     tips: [
       { title: "Buyer tip", content: "Get pre-approved before you start viewing homes. It clarifies your budget and makes your offer more credible to sellers." },
-      { title: "Financial note", content: "Northline does not provide financial advice. Speak with a qualified advisor about mortgages and major property decisions." },
+      { title: "Financial note", content: "Global Insights Daily does not provide financial advice. Speak with a qualified advisor about mortgages and major property decisions." },
     ],
     closers: [
       "Property decisions are among the largest most people make. Patience, preparation and a clear sense of your own priorities matter more than timing the market perfectly.",

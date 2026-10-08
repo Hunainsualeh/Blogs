@@ -6,13 +6,31 @@ import { cn } from "@/lib/utils";
 import { validateImageFile } from "@/lib/validation";
 import { ImageIcon, TrashIcon, UploadIcon } from "@/components/ui/Icons";
 
-export function readFileAsDataUrl(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
+const MAX_DIMENSION = 1920;
+
+async function optimizeImage(file: File): Promise<Blob> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.85));
+    return blob && blob.type === "image/webp" && blob.size < file.size ? blob : file;
+  } catch {
+    return file;
+  }
+}
+
+async function uploadImage(file: File): Promise<string> {
+  const body = new FormData();
+  body.append("file", await optimizeImage(file), file.name);
+  const response = await fetch("/api/upload", { method: "POST", body });
+  const data = (await response.json()) as { ok: boolean; url?: string; error?: string };
+  if (!data.ok || !data.url) throw new Error(data.error ?? "That image could not be uploaded.");
+  return data.url;
 }
 
 type ImageUploaderProps = {
@@ -40,11 +58,11 @@ export function ImageUploader({ value, onChange, label = "Upload image", error, 
     }
     setBusy(true);
     try {
-      const dataUrl = await readFileAsDataUrl(file);
+      const url = await uploadImage(file);
       setProblem(null);
-      onChange(dataUrl, file);
-    } catch {
-      setProblem("That image could not be read. Try another file.");
+      onChange(url, file);
+    } catch (error) {
+      setProblem(error instanceof Error ? error.message : "That image could not be uploaded. Try another file.");
     } finally {
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -100,7 +118,7 @@ export function ImageUploader({ value, onChange, label = "Upload image", error, 
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-brand shadow-sm">
             {busy ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand border-t-transparent" /> : <ImageIcon size={20} />}
           </span>
-          <span className="text-[14px] font-medium text-ink">{busy ? "Processing image..." : label}</span>
+          <span className="text-[14px] font-medium text-ink">{busy ? "Uploading image..." : label}</span>
           <span className="text-[12.5px] text-ink-subtle">Drag and drop or click to browse. JPG, PNG or WebP up to 4 MB.</span>
         </label>
       )}

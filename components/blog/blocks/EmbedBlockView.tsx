@@ -9,11 +9,11 @@ export function getEmbedSource(url: string, provider: EmbedBlock["provider"]) {
     const parsed = new URL(url);
     if (provider === "youtube") {
       const id = parsed.hostname.includes("youtu.be") ? parsed.pathname.slice(1) : parsed.searchParams.get("v") ?? parsed.pathname.split("/").pop();
-      return id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1` : null;
+      return id && /^[\w-]{6,20}$/.test(id) ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1` : null;
     }
     if (provider === "vimeo") {
       const id = parsed.pathname.split("/").filter(Boolean).pop();
-      return id ? `https://player.vimeo.com/video/${id}?autoplay=1` : null;
+      return id && /^\d{4,12}$/.test(id) ? `https://player.vimeo.com/video/${id}?autoplay=1` : null;
     }
   } catch {
     return null;

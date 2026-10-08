@@ -1,15 +1,4 @@
-export type CategorySlug =
-  | "tech"
-  | "business"
-  | "fashion"
-  | "health"
-  | "digital-marketing"
-  | "lifestyle"
-  | "travel"
-  | "education"
-  | "real-estate"
-  | "food-recipe"
-  | "sports";
+export type CategorySlug = string;
 
 export type Category = {
   slug: CategorySlug;
@@ -18,4 +7,7 @@ export type Category = {
   description: string;
   tagline: string;
   topics: string[];
+  order: number;
+  showOnHome: boolean;
+  showInNav: boolean;
 };

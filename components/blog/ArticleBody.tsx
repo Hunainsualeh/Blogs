@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment, type ReactNode } from "react";
 import type { CalloutBlock, ContentBlock } from "@/types/article";
 import { cn, headingId } from "@/lib/utils";
 import { AlertIcon, ArrowRightIcon, ArrowUpRightIcon, InfoIcon, LightbulbIcon } from "@/components/ui/Icons";
@@ -56,12 +57,12 @@ function Block({ block }: { block: ContentBlock }) {
     }
     case "image":
       return (
-        <figure className="!my-10 lg:-mx-16">
+        <figure className="!my-8">
           <div className="relative aspect-[3/2] overflow-hidden rounded-sm bg-surface-muted">
-            <Image src={block.src} alt={block.alt} fill sizes="(min-width: 1024px) 812px, 100vw" className="object-cover" />
+            <Image src={block.src} alt={block.alt} fill sizes="(min-width: 1320px) 760px, (min-width: 1024px) 60vw, 100vw" className="object-cover" />
           </div>
           {block.caption || block.credit ? (
-            <figcaption className="mt-3 flex flex-wrap gap-x-2 text-[13px] leading-relaxed text-ink-subtle lg:px-16">
+            <figcaption className="mt-3 flex flex-wrap gap-x-2 text-[13px] leading-relaxed text-ink-subtle ">
               {block.caption ? <span>{block.caption}</span> : null}
               {block.credit ? <span className="kicker !text-[10px] text-ink-subtle/80">Photo: {block.credit}</span> : null}
             </figcaption>
@@ -158,12 +159,26 @@ function Block({ block }: { block: ContentBlock }) {
   }
 }
 
-export function ArticleBody({ blocks, className }: { blocks: ContentBlock[]; className?: string }) {
-  return (
-    <div className={cn("mx-auto max-w-[var(--theme-reading-width)] space-y-6", className)}>
-      {blocks.filter(isRenderable).map((block) => (
-        <Block key={block.id} block={block} />
-      ))}
-    </div>
-  );
+type InContentAds = { node: ReactNode; afterParagraphs: number; max: number };
+
+export function ArticleBody({ blocks, className, ads }: { blocks: ContentBlock[]; className?: string; ads?: InContentAds }) {
+  const renderable = blocks.filter(isRenderable);
+  const totalParagraphs = renderable.filter((block) => block.type === "paragraph").length;
+  const nodes: ReactNode[] = [];
+  let paragraphs = 0;
+  let inserted = 0;
+  renderable.forEach((block, index) => {
+    nodes.push(<Block key={block.id} block={block} />);
+    if (block.type !== "paragraph") return;
+    paragraphs += 1;
+    if (!ads || ads.max <= 0 || inserted >= ads.max) return;
+    const next = renderable[index + 1];
+    const atThreshold = paragraphs >= ads.afterParagraphs * (inserted + 1);
+    const hasRoomAfter = totalParagraphs - paragraphs >= 3;
+    if (atThreshold && hasRoomAfter && next && (next.type === "heading" || next.type === "paragraph")) {
+      inserted += 1;
+      nodes.push(<Fragment key={`ad-${inserted}`}>{ads.node}</Fragment>);
+    }
+  });
+  return <div className={cn("space-y-6", className)}>{nodes}</div>;
 }

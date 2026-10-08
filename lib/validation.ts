@@ -1,6 +1,5 @@
 import type { ContentBlock } from "@/types/article";
 import type { FieldErrors, SubmissionDraft } from "@/types/submission";
-import { isCategorySlug } from "@/data/category-lookup";
 import { SUBMISSION_LIMITS } from "./constants";
 import { contentWordCount } from "./utils";
 
@@ -53,7 +52,7 @@ function validateBlocks(blocks: ContentBlock[], errors: FieldErrors) {
   });
 }
 
-export function validateSubmission(draft: SubmissionDraft): FieldErrors {
+export function validateSubmission(draft: SubmissionDraft, categorySlugs: string[]): FieldErrors {
   const errors: FieldErrors = {};
   const limits = SUBMISSION_LIMITS;
   const title = draft.title.trim();
@@ -67,7 +66,7 @@ export function validateSubmission(draft: SubmissionDraft): FieldErrors {
   else if (excerpt.length < limits.excerptMin) errors.excerpt = `The description needs at least ${limits.excerptMin} characters.`;
   else if (excerpt.length > limits.excerptMax) errors.excerpt = `Keep the description under ${limits.excerptMax} characters.`;
 
-  if (!draft.category || !isCategorySlug(draft.category)) errors.category = "Choose a category.";
+  if (!draft.category || !categorySlugs.includes(draft.category)) errors.category = "Choose a category.";
   if (draft.tags.length === 0) errors.tags = "Add at least one tag.";
   else if (draft.tags.length > limits.maxTags) errors.tags = `Use ${limits.maxTags} tags or fewer.`;
 

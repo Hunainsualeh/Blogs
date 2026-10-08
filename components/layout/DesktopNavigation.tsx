@@ -2,27 +2,95 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useId, useRef, useState } from "react";
 import type { NavItem } from "@/config/navigation";
+import { categoryHref } from "@/lib/routes";
 import { cn } from "@/lib/utils";
+import { ChevronDownIcon } from "@/components/ui/Icons";
 
-export function DesktopNavigation({ items, className }: { items: NavItem[]; className?: string }) {
+type DesktopNavigationProps = {
+  items: NavItem[];
+  categories: { slug: string; name: string }[];
+  className?: string;
+};
+
+export function DesktopNavigation({ items, categories, className }: DesktopNavigationProps) {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const [lastPath, setLastPath] = useState(pathname);
+  const containerRef = useRef<HTMLLIElement>(null);
+  const menuId = useId();
+
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    function onPointer(event: PointerEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) setOpen(false);
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("pointerdown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const linkClasses = (active: boolean) =>
+    cn(
+      "relative inline-flex h-16 items-center px-3 text-[14.5px] font-medium transition-colors",
+      "after:absolute after:inset-x-3 after:bottom-0 after:h-[2px] after:bg-brand after:transition-opacity",
+      active ? "text-brand after:opacity-100" : "text-ink-muted after:opacity-0 hover:text-ink hover:after:opacity-100",
+    );
+
   return (
-    <nav aria-label="Sections" className={cn("relative", className)}>
-      <ul className="no-scrollbar -mx-4 flex items-center gap-1 overflow-x-auto px-4 sm:mx-0 sm:px-0 lg:justify-between">
+    <nav aria-label="Main" className={className}>
+      <ul className="flex items-center">
         {items.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          if (item.href === "/categories") {
+            return (
+              <li key={item.href} ref={containerRef} className="relative">
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  aria-controls={menuId}
+                  onClick={() => setOpen((value) => !value)}
+                  className={cn(linkClasses(active || pathname.startsWith("/category")), "gap-1")}
+                >
+                  {item.label}
+                  <ChevronDownIcon size={14} className={cn("transition-transform", open && "rotate-180")} />
+                </button>
+                {open ? (
+                  <div id={menuId} className="absolute left-1/2 top-full z-50 w-[520px] -translate-x-1/2 rounded-md border border-line bg-white p-3 shadow-[0_16px_40px_-20px_rgba(0,27,61,0.35)]">
+                    <ul className="grid grid-cols-2 gap-x-2">
+                      {categories.map((category) => (
+                        <li key={category.slug}>
+                          <Link href={categoryHref(category.slug)} className="block rounded-sm px-3 py-2 text-[14.5px] text-ink hover:bg-surface-muted hover:text-brand">
+                            {category.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-2 border-t border-line pt-2">
+                      <Link href="/categories" className="block rounded-sm px-3 py-2 text-[13.5px] font-medium text-brand hover:bg-surface-muted">
+                        Browse all categories
+                      </Link>
+                    </div>
+                  </div>
+                ) : null}
+              </li>
+            );
+          }
           return (
-            <li key={item.href} className="shrink-0">
-              <Link
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "relative inline-flex h-11 items-center px-2.5 text-[13.5px] font-medium transition-colors lg:px-1.5 xl:px-2.5",
-                  "after:absolute after:inset-x-2.5 after:bottom-0 after:h-[2px] after:origin-left after:scale-x-0 after:bg-brand after:transition-transform after:duration-300 hover:after:scale-x-100 lg:after:inset-x-1.5 xl:after:inset-x-2.5",
-                  active ? "text-brand after:scale-x-100" : "text-ink-muted hover:text-ink",
-                )}
-              >
+            <li key={item.href}>
+              <Link href={item.href} aria-current={active ? "page" : undefined} className={linkClasses(active)}>
                 {item.label}
               </Link>
             </li>

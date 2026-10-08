@@ -50,6 +50,7 @@ export function BlogEditor({ categories }: { categories: Category[] }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<SubmissionReceipt | null>(null);
   const [saveStatus, setSaveStatus] = useState("Draft not saved yet");
+  const [honeypot, setHoneypot] = useState("");
   const [pendingTemplate, setPendingTemplate] = useState<TemplateKey | null>(null);
   const loaded = useRef(false);
 
@@ -74,7 +75,8 @@ export function BlogEditor({ categories }: { categories: Category[] }) {
     return () => window.clearTimeout(timer);
   }, [draft]);
 
-  const errors: FieldErrors = useMemo(() => (showErrors ? validateSubmission(draft) : {}), [draft, showErrors]);
+  const categorySlugs = useMemo(() => categories.map((item) => item.slug), [categories]);
+  const errors: FieldErrors = useMemo(() => (showErrors ? validateSubmission(draft, categorySlugs) : {}), [draft, showErrors, categorySlugs]);
 
   const category = useMemo(() => categories.find((item) => item.slug === draft.category), [categories, draft.category]);
   const wordCount = contentWordCount(draft.content);
@@ -93,7 +95,7 @@ export function BlogEditor({ categories }: { categories: Category[] }) {
   async function submit() {
     setServerError(null);
     setShowErrors(true);
-    const found = validateSubmission(draft);
+    const found = validateSubmission(draft, categorySlugs);
     if (Object.keys(found).length > 0) {
       setMode("write");
       focusFirstError(found);
@@ -104,7 +106,7 @@ export function BlogEditor({ categories }: { categories: Category[] }) {
       const response = await fetch("/api/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(draft),
+        body: JSON.stringify({ ...draft, website: honeypot }),
       });
       const data = (await response.json()) as { ok: boolean; receipt?: SubmissionReceipt; error?: string; errors?: FieldErrors };
       if (!data.ok || !data.receipt) {
@@ -214,7 +216,7 @@ export function BlogEditor({ categories }: { categories: Category[] }) {
             </div>
           </div>
           <aside className="lg:sticky lg:top-[calc(var(--header-height,120px)+80px)] lg:max-h-[calc(100vh-var(--header-height,120px)-100px)] lg:self-start lg:overflow-y-auto">
-            <EditorSidebar draft={draft} dispatch={dispatch} errors={errors} categories={categories} submitting={submitting} onSubmit={submit} />
+            <EditorSidebar draft={draft} dispatch={dispatch} errors={errors} categories={categories} submitting={submitting} onSubmit={submit} honeypot={honeypot} onHoneypot={setHoneypot} />
           </aside>
         </div>
       )}
