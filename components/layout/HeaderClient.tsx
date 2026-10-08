@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { primaryNavigation } from "@/config/navigation";
 import { BoltIcon, SearchIcon } from "@/components/ui/Icons";
 import { Logo } from "@/components/ui/Logo";
+import { CategoryBar } from "./CategoryBar";
 import { DesktopNavigation } from "./DesktopNavigation";
 import { MenuButton } from "./MenuButton";
 import { MobileNavigation } from "./MobileNavigation";
@@ -28,6 +29,7 @@ export function HeaderClient({ categories, breaking }: { categories: NavCategory
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [lastPath, setLastPath] = useState(pathname);
+  const [stuck, setStuck] = useState(false);
   const today = useSyncExternalStore(subscribeNothing, readToday, () => "");
   const stickyRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +58,18 @@ export function HeaderClient({ categories, breaking }: { categories: NavCategory
     const observer = new ResizeObserver(update);
     observer.observe(element);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const element = stickyRef.current;
+    if (!element) return;
+    function onScroll() {
+      const top = element?.getBoundingClientRect().top ?? 1;
+      setStuck(top <= 0.5);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -98,7 +112,7 @@ export function HeaderClient({ categories, breaking }: { categories: NavCategory
         <Logo size="lg" />
       </div>
 
-      <div ref={stickyRef} className="sticky top-0 z-50 bg-white">
+      <div ref={stickyRef} className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${stuck ? "shadow-[0_8px_18px_-12px_rgba(0,0,0,0.35)]" : ""}`}>
         <div className="flex h-14 items-center justify-between border-b border-line px-4 lg:hidden">
           <MenuButton open={menuOpen} onClick={() => setMenuOpen((value) => !value)} controls={menuId} />
           <Logo size="sm" />
@@ -108,11 +122,16 @@ export function HeaderClient({ categories, breaking }: { categories: NavCategory
         </div>
         <div className="container-site hidden lg:block">
           <div className="flex items-stretch justify-between bg-dark">
-            <DesktopNavigation items={primaryNavigation} categories={categories} />
+            <DesktopNavigation items={primaryNavigation} />
             <button type="button" onClick={() => setSearchOpen(true)} className="my-2.5 mr-3 flex w-[240px] items-center justify-between rounded-full bg-white/10 px-4 text-[13px] text-white/70 hover:bg-white/15" aria-label="Search articles">
               Search for
               <SearchIcon size={16} />
             </button>
+          </div>
+        </div>
+        <div className="border-b border-line bg-white lg:border-b-0 lg:bg-transparent">
+          <div className="container-site !px-0 lg:!px-10">
+            <CategoryBar categories={categories} className="lg:border-x lg:border-b lg:border-line lg:bg-white" />
           </div>
         </div>
         {menuOpen ? <MobileNavigation id={menuId} items={primaryNavigation} categories={categories} onNavigate={closeMenu} /> : null}
