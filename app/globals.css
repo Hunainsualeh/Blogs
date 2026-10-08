@@ -5,6 +5,7 @@
   --color-brand-strong: var(--theme-brand-strong);
   --color-brand-soft: var(--theme-brand-soft);
   --color-accent: var(--theme-accent);
+  --color-dark: var(--theme-dark);
   --color-ink: var(--theme-ink);
   --color-ink-muted: var(--theme-ink-muted);
   --color-ink-subtle: var(--theme-ink-subtle);
@@ -19,8 +20,8 @@
   --radius-md: var(--theme-radius-md);
   --radius-lg: var(--theme-radius-lg);
   --font-sans: var(--font-sans-family);
-  --font-serif: var(--font-serif-family);
-  --font-mono: var(--font-mono-family);
+  --font-serif: var(--font-sans-family);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 @layer base {
@@ -78,10 +79,9 @@
   }
 
   .kicker {
-    font-family: var(--font-mono-family), ui-monospace, monospace;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
@@ -205,10 +205,9 @@
 
 @layer components {
   .prose-page {
-    font-family: var(--font-serif-family), Georgia, serif;
-    font-size: 18px;
-    line-height: 1.75;
-    color: #1c2636;
+    font-size: 17px;
+    line-height: 1.85;
+    color: #3b404a;
   }
 
   .prose-page > * + * {
@@ -217,18 +216,16 @@
 
   .prose-page h2 {
     margin-top: 2.2em;
-    font-family: var(--font-sans-family), system-ui, sans-serif;
-    font-size: 26px;
-    font-weight: 600;
+    font-size: 27px;
+    font-weight: 700;
     line-height: 1.2;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
     color: var(--theme-ink);
     scroll-margin-top: 100px;
   }
 
   .prose-page h3 {
     margin-top: 1.6em;
-    font-family: var(--font-sans-family), system-ui, sans-serif;
     font-size: 20px;
     font-weight: 600;
     letter-spacing: -0.015em;
@@ -256,7 +253,7 @@
     color: var(--theme-brand);
     text-decoration: underline;
     text-underline-offset: 3px;
-    text-decoration-color: rgb(0 43 90 / 0.3);
+    text-decoration-color: rgb(0 105 232 / 0.3);
   }
 
   .prose-page a:hover {

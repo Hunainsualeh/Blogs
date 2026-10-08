@@ -39,18 +39,18 @@ function Block({ block }: { block: ContentBlock }) {
   switch (block.type) {
     case "paragraph":
       return (
-        <p className="font-serif text-[18px] leading-[1.75] text-[#1c2636] sm:text-[19.5px]">
+        <p className="text-[17px] leading-[1.9] text-[#3b404a]">
           <InlineText text={block.content} />
         </p>
       );
     case "heading": {
       const id = headingId(block.content);
       return block.level === 2 ? (
-        <h2 id={id} className="!mt-14 scroll-mt-32 text-[26px] font-semibold leading-tight tracking-[-0.025em] text-ink sm:text-[30px]">
+        <h2 id={id} className="!mt-14 scroll-mt-32 text-[26px] font-medium leading-tight tracking-[-0.02em] text-ink sm:text-[29px]">
           {block.content}
         </h2>
       ) : (
-        <h3 id={id} className="!mt-10 scroll-mt-32 text-[20px] font-semibold leading-snug tracking-[-0.02em] text-ink sm:text-[22px]">
+        <h3 id={id} className="!mt-10 scroll-mt-32 text-[20px] font-medium leading-snug tracking-[-0.015em] text-ink sm:text-[22px]">
           {block.content}
         </h3>
       );
@@ -72,7 +72,7 @@ function Block({ block }: { block: ContentBlock }) {
     case "quote":
       return (
         <blockquote className="!my-10 border-l-[3px] border-brand pl-6 sm:pl-8">
-          <p className="font-serif text-[23px] italic leading-[1.45] text-ink sm:text-[27px]">&ldquo;{block.content}&rdquo;</p>
+          <p className="text-[21px] font-medium italic leading-[1.5] text-ink sm:text-[23px]">&ldquo;{block.content}&rdquo;</p>
           {block.attribution ? <footer className="mt-4 text-sm text-ink-muted">{block.attribution}</footer> : null}
         </blockquote>
       );
@@ -80,11 +80,11 @@ function Block({ block }: { block: ContentBlock }) {
       const items = block.items.filter((item) => item.trim());
       const ListTag = block.style === "ordered" ? "ol" : "ul";
       return (
-        <ListTag className={cn("space-y-3 pl-1 font-serif text-[18px] leading-[1.7] text-[#1c2636] sm:text-[19px]", block.style === "ordered" ? "[counter-reset:item]" : "")}>
+        <ListTag className={cn("space-y-3 pl-1 text-[17px] leading-[1.8] text-[#3b404a]", block.style === "ordered" ? "[counter-reset:item]" : "")}>
           {items.map((item, index) => (
             <li key={index} className="flex gap-4">
               {block.style === "ordered" ? (
-                <span className="mt-[3px] font-mono text-[14px] font-medium text-brand">{String(index + 1).padStart(2, "0")}</span>
+                <span className="mt-[3px] text-[14px] font-semibold text-brand">{String(index + 1).padStart(2, "0")}</span>
               ) : (
                 <span aria-hidden className="mt-[13px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
               )}

@@ -6,13 +6,17 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function CategorySection({ category, articles }: { category: Category; articles: ArticleWithRelations[] }) {
   if (articles.length === 0) return null;
+  const [lead, ...rest] = articles;
   return (
-    <section aria-labelledby={`cat-${category.slug}`} className="container-site">
-      <SectionHeading title={category.name} id={`cat-${category.slug}`} eyebrow={category.tagline} href={categoryHref(category.slug)} linkLabel={`More in ${category.name}`} className="mb-6" />
-      <div className="grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
-        {articles.map((article) => (
-          <ArticleCard key={article.id} article={article} size="sm" showExcerpt={false} showCategory={false} showAuthor={false} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" />
-        ))}
+    <section aria-labelledby={`cat-${category.slug}`}>
+      <SectionHeading title={category.name} id={`cat-${category.slug}`} href={categoryHref(category.slug)} linkLabel="View all" />
+      <div className="grid gap-6 md:grid-cols-2">
+        <ArticleCard article={lead} variant="overlay" size="md" showCategory={false} ratio="4/5" sizes="(min-width: 1024px) 400px, (min-width: 768px) 45vw, 100vw" className="aspect-[16/10] md:aspect-auto md:[&>div:first-child]:!aspect-[4/5]" />
+        <div className="space-y-5">
+          {rest.slice(0, 4).map((article) => (
+            <ArticleCard key={article.id} article={article} variant="thumb" size="sm" />
+          ))}
+        </div>
       </div>
     </section>
   );

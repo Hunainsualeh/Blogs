@@ -54,7 +54,7 @@ async function SearchResults({ searchParams }: { searchParams: PageProps<"/searc
       <div className="mt-6 max-w-3xl">
         <SearchInput key={query} defaultValue={query} size="lg" />
       </div>
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] lg:gap-12">
+      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10">
         <section aria-live="polite" className="min-w-0">
           {query ? (
             <>
@@ -68,9 +68,9 @@ async function SearchResults({ searchParams }: { searchParams: PageProps<"/searc
                 )}
               </p>
               {results.length > 0 ? (
-                <div className="divide-y divide-line">
+                <div className="mt-5 space-y-5">
                   {results.slice(0, 30).map((article) => (
-                    <ArticleCard key={article.id} article={article} variant="horizontal" showAuthor={false} className="py-6" />
+                    <ArticleCard key={article.id} article={article} variant="list" />
                   ))}
                 </div>
               ) : (

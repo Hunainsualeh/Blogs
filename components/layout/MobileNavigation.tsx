@@ -13,7 +13,7 @@ type MobileNavigationProps = {
 
 export function MobileNavigation({ id, items, categories, onNavigate }: MobileNavigationProps) {
   return (
-    <div id={id} className="fixed inset-x-0 bottom-0 top-[var(--header-height,64px)] z-40 overflow-y-auto overscroll-contain border-t border-line bg-white lg:hidden">
+    <div id={id} className="fixed inset-x-0 bottom-0 top-[var(--menu-top,96px)] z-40 overflow-y-auto overscroll-contain border-t border-line bg-white lg:hidden">
       <div className="container-site flex flex-col gap-8 py-6">
         <nav aria-label="Main">
           <ul className="divide-y divide-line border-y border-line">

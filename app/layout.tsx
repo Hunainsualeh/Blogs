@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { theme, themeCssVariables } from "@/config/theme";
-import { monoFont, sansFont, serifFont } from "@/lib/fonts";
+import { sansFont } from "@/lib/fonts";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang={siteConfig.language}
-      className={`${sansFont.variable} ${serifFont.variable} ${monoFont.variable} antialiased`}
+      className={`${sansFont.variable} antialiased`}
       style={themeCssVariables() as CSSProperties}
     >
       <body className="flex min-h-screen flex-col">

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { getAllCategories, getSettings } from "@/lib/blog";
 import { SUBMISSION_LIMITS } from "@/lib/constants";
 import { categoryHref } from "@/lib/routes";
+import { unsplash } from "@/lib/images";
 import { siteConfig } from "@/config/site";
 import { breadcrumbJsonLd, buildMetadata, JsonLd } from "@/lib/seo";
 import { ProsePage } from "@/components/layout/ProsePage";
@@ -15,82 +17,84 @@ export const metadata: Metadata = buildMetadata({
   path: "/write-for-us",
 });
 
+const contents = [
+  { href: "#guidelines", label: "Submission Guidelines" },
+  { href: "#links", label: "Links and Promotion" },
+  { href: "#benefits", label: "Benefits For Contributors" },
+  { href: "#how-to-submit", label: "How to Submit" },
+];
+
 export default async function WriteForUsPage() {
   const [categories, settings] = await Promise.all([getAllCategories(), getSettings()]);
+  const topicList = categories.map((category) => category.name).join(", ");
   return (
     <ProsePage
       title="Write for Us"
-      kicker="Contributors"
-      intro={`${siteConfig.name} welcomes original articles from writers who know their subject. If you can teach our readers something useful, we would like to read your work.`}
+      banner={
+        <div className="relative aspect-[16/6] overflow-hidden rounded-[28px] bg-surface-muted">
+          <Image src={unsplash("1455390582262-044cdead277a")} alt="A pen resting on a notebook beside a keyboard" fill priority sizes="(min-width: 1200px) 1120px, 100vw" className="object-cover" />
+        </div>
+      }
     >
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Write for Us", path: "/write-for-us" }])} />
 
+      <h2 className="!mt-0">Write for Us in Our Magazine: {topicList}</h2>
+
+      <details open className="w-fit min-w-[240px] rounded-sm border border-line bg-surface-muted px-5 py-4 text-[15px] leading-normal">
+        <summary className="cursor-pointer font-semibold text-ink">Contents</summary>
+        <ol className="mt-3 space-y-1.5">
+          {contents.map((item) => (
+            <li key={item.href}>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+
       <p>
-        We publish articles across {categories.length} categories. Every contributor article goes through editorial review, and nothing is published until an editor approves it. Please read the guidelines below before you submit.
+        When you write for us, choose your topic carefully. We welcome well-written articles from guest writers on the subjects our readers care about. Your article should be fresh and must not have been published anywhere else on the internet, including your own website.
       </p>
-      <p className="!mt-6 flex flex-wrap gap-3 not-prose">
+      <p>
+        We add every contributor&apos;s name and short bio to their article, along with a link to their own website or profile. If you would like to write for {siteConfig.name}, read the guidelines below and send your article through our{" "}
+        <Link href="/submit">submission editor</Link>.
+      </p>
+      <p>We look forward to hearing from you.</p>
+
+      <h2 id="guidelines">Submission Guidelines:</h2>
+      <p><strong>– Original Article:</strong> Please submit only original, non-plagiarized articles. We do not accept articles that have been published or submitted anywhere else online, including personal blogs and social media, or that you plan to distribute to other websites. Please do not send advertorials or articles that promote a specific brand or product.</p>
+      <p>
+        <strong>– Topics:</strong> The topic must be directly related to one of our categories. We are currently accepting submissions in:{" "}
+        {categories.map((category, index) => (
+          <span key={category.slug}>
+            <Link href={categoryHref(category.slug)}>{category.name}</Link>
+            {index < categories.length - 1 ? ", " : "."}
+          </span>
+        ))}
+      </p>
+      <p><strong>– Recommended Article Length:</strong> 800 to 2,000 words. We require at least {SUBMISSION_LIMITS.minWords} words.</p>
+      <p><strong>– Formatting:</strong> Give readers a clear takeaway or lesson. Use headings, subheadings and numbered or bulleted lists to structure your writing. Our editor includes ready-made templates.</p>
+      <p><strong>– Short Paragraphs:</strong> Use short paragraphs of no more than 3 to 4 sentences each.</p>
+      <p><strong>– Accuracy:</strong> Include facts, research, sources or personal experience to support your points, and link to credible sources where it helps the reader.</p>
+      <p><strong>– Multimedia:</strong> Add a featured image and descriptive alt text for every image. You must own the image or have the right to use it. If an image is under a license, give an image credit. JPG, PNG or WebP up to 4 MB.</p>
+      <p><strong>– Editorial Rights:</strong> We reserve the right to edit articles for clarity, length and style, and to decline articles that do not meet our standards. You accept that our editorial team may edit your work.</p>
+
+      <h2 id="links">Links and Promotion:</h2>
+      <p><strong>– Linking Out:</strong> Link to credible sources that help the reader. We do not allow links to commercial websites inside articles, and we do not accept paid, affiliate or irrelevant links.</p>
+      <p><strong>– Internal Linking:</strong> Link to related {siteConfig.name} articles where it is helpful to the reader.</p>
+      <p><strong>– What We Do Not Accept:</strong> Spam, sponsored posts, copied or spun content, unedited AI-generated text, thin or repetitive articles, and illegal, hateful, adult, gambling or misleading health and financial content.</p>
+
+      <h2 id="benefits">Benefits For Contributors:</h2>
+      <p>• <strong>Build your reputation.</strong> Your name and bio appear on every article we publish for you.</p>
+      <p>• A link to your personal website or social profile in your author bio. The link is marked so that it does not pass search ranking credit.</p>
+      <p>• Editorial feedback from our team before your article goes live.</p>
+
+      <h2 id="how-to-submit">How to Submit:</h2>
+      <p>Write your article in our online editor. Your draft saves automatically in your browser while you work.</p>
+      <p>Add your title, a short description, a category, tags and a featured image, then give us your name, email address and a short author bio of up to {SUBMISSION_LIMITS.bioMax} characters. Your email is seen only by our editors and is never published.</p>
+      <p>When you submit, you receive a submission ID. An editor reads each submission, checks it against our <Link href="/about#standards">editorial standards</Link> and decides whether to approve it, ask for changes or decline it. We aim to reply within 5 to 7 working days. Submitting does not guarantee publication, and nothing is published until an editor approves it.</p>
+      <p className="!mt-6">
         <Button href="/submit" icon={<PenIcon size={16} />} iconPosition="start" className="!text-white !no-underline">Submit an article</Button>
       </p>
-
-      <h2>Topics we accept</h2>
-      <p>We accept articles that fit one of these categories:</p>
-      <ul>
-        {categories.map((category) => (
-          <li key={category.slug}>
-            <Link href={categoryHref(category.slug)}>{category.name}</Link>: {category.topics.slice(0, 4).join(", ")}
-          </li>
-        ))}
-      </ul>
-
-      <h2 id="guidelines">Submission guidelines</h2>
-      <ul>
-        <li><strong>Original content:</strong> Your article must be your own work and must not be published anywhere else, including your own blog. It must not be submitted to another publication at the same time.</li>
-        <li><strong>Useful and specific:</strong> Teach readers something, share real experience or make a clear argument. Practical examples are better than general advice.</li>
-        <li><strong>Length:</strong> We need at least {SUBMISSION_LIMITS.minWords} words. Most accepted articles run between 800 and 2,000 words.</li>
-        <li><strong>Structure:</strong> Use a clear introduction, descriptive headings and subheadings, short paragraphs and lists where they help. Our editor includes ready-made templates.</li>
-        <li><strong>Accuracy:</strong> Support facts and figures with credible sources and link to them where it helps the reader.</li>
-        <li><strong>Images:</strong> Add a featured image and include alt text for every image. You must own the image or have the right to use it. JPG, PNG or WebP up to 4 MB each.</li>
-        <li><strong>Tone:</strong> Write for readers, not for search engines. Do not stuff keywords or repeat the same phrase unnaturally.</li>
-        <li><strong>Editorial rights:</strong> Our editors may edit your article for clarity, length and style, and may decline it if it does not meet our standards.</li>
-      </ul>
-
-      <h2>Links and promotion</h2>
-      <ul>
-        <li>Articles must not promote a product, service, brand or website.</li>
-        <li>Link only to credible sources that help the reader. Do not include paid, affiliate or irrelevant links.</li>
-        <li>Your website or profile may appear in your author bio and is marked so that it does not pass search ranking credit.</li>
-      </ul>
-
-      <h2>What we do not accept</h2>
-      <ul>
-        <li>Spam, advertorials, sponsored posts or articles written mainly to place a backlink.</li>
-        <li>Content copied, spun or lightly rewritten from other sources, or text generated by AI without substantial human work and review.</li>
-        <li>Articles that are thin, repetitive or unrelated to our categories.</li>
-        <li>Illegal, hateful, adult, gambling, or misleading health and financial content.</li>
-      </ul>
-
-      <h2>Benefits for contributors</h2>
-      <ul>
-        <li>A byline and author bio on every article you publish with us.</li>
-        <li>A link to your own website or profile in your bio.</li>
-        <li>Editorial feedback from our team before publication.</li>
-        <li>A clean, readable page for your work that is shared with our readers across categories.</li>
-      </ul>
-
-      <h2>How to submit</h2>
-      <ol>
-        <li>Open the <Link href="/submit">submission editor</Link> and write your article. Your draft saves automatically in your browser.</li>
-        <li>Add your title, short description, category, tags and featured image.</li>
-        <li>Add your name, email address and a short bio of up to {SUBMISSION_LIMITS.bioMax} characters. Your email is only seen by our editors and is never published.</li>
-        <li>Submit the article for review. You receive a submission ID.</li>
-      </ol>
-
-      <h2>The review process</h2>
-      <p>
-        An editor reads each submission, checks it against our <Link href="/about#standards">editorial standards</Link> and decides whether to approve it, ask for changes or decline it. We aim to respond within 5 to 7 working days, but we cannot guarantee publication. Approved articles are published under your byline with your short bio.
-      </p>
-
-      <h2>Questions</h2>
       <p>
         If you have a question before you write, email <a href={`mailto:${settings.contributorEmail}`}>{settings.contributorEmail}</a>.
       </p>

@@ -128,3 +128,7 @@ export const XLogoIcon = (p: IconProps) => (
 export const ShareIcon = (p: IconProps) => (
   <svg {...base(p)}><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 13.5 6.8 4" /><path d="m15.4 6.5-6.8 4" /></svg>
 );
+
+export const BoltIcon = (p: IconProps) => (
+  <svg {...base(p)} fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" /></svg>
+);

@@ -9,46 +9,38 @@ type PaginationProps = {
   className?: string;
 };
 
+function visiblePages(page: number, total: number) {
+  const pages = new Set([1, total, page, page - 1, page + 1]);
+  return [...pages].filter((value) => value >= 1 && value <= total).sort((a, b) => a - b);
+}
+
 export function Pagination({ page, totalPages, hrefForPage, className }: PaginationProps) {
   if (totalPages <= 1) return null;
-  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
-  const itemBase = "inline-flex h-10 min-w-10 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors";
+  const pages = visiblePages(page, totalPages);
+  const item = "inline-flex h-10 min-w-10 items-center justify-center rounded-sm border px-3 text-sm font-medium transition-colors";
 
   return (
-    <nav aria-label="Pagination" className={cn("flex items-center justify-between gap-4 border-t border-line pt-6", className)}>
+    <nav aria-label="Pagination" className={cn("flex flex-wrap items-center justify-center gap-1.5", className)}>
       {page > 1 ? (
-        <Link href={hrefForPage(page - 1)} className={cn(itemBase, "gap-1 border-line hover:border-ink")} rel="prev">
-          <ChevronLeftIcon size={16} /> Newer
+        <Link href={hrefForPage(page - 1)} rel="prev" aria-label="Previous page" className={cn(item, "border-line bg-white text-ink hover:border-brand hover:text-brand")}>
+          <ChevronLeftIcon size={16} />
         </Link>
-      ) : (
-        <span className={cn(itemBase, "gap-1 border-line text-ink-subtle opacity-50")} aria-hidden>
-          <ChevronLeftIcon size={16} /> Newer
+      ) : null}
+      {pages.map((number, index) => (
+        <span key={number} className="flex items-center gap-1.5">
+          {index > 0 && number - pages[index - 1] > 1 ? <span className="px-1 text-ink-subtle" aria-hidden>…</span> : null}
+          {number === page ? (
+            <span aria-current="page" className={cn(item, "border-brand bg-brand text-white")}>{number}</span>
+          ) : (
+            <Link href={hrefForPage(number)} aria-label={`Page ${number}`} className={cn(item, "border-line bg-white text-ink hover:border-brand hover:text-brand")}>{number}</Link>
+          )}
         </span>
-      )}
-      <ol className="flex items-center gap-1.5">
-        {pages.map((number) => (
-          <li key={number}>
-            {number === page ? (
-              <span aria-current="page" className={cn(itemBase, "border-brand bg-brand text-white")}>
-                {number}
-              </span>
-            ) : (
-              <Link href={hrefForPage(number)} className={cn(itemBase, "border-line hover:border-ink")} aria-label={`Page ${number}`}>
-                {number}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ol>
+      ))}
       {page < totalPages ? (
-        <Link href={hrefForPage(page + 1)} className={cn(itemBase, "gap-1 border-line hover:border-ink")} rel="next">
-          Older <ChevronRightIcon size={16} />
+        <Link href={hrefForPage(page + 1)} rel="next" aria-label="Next page" className={cn(item, "border-line bg-white text-ink hover:border-brand hover:text-brand")}>
+          <ChevronRightIcon size={16} />
         </Link>
-      ) : (
-        <span className={cn(itemBase, "gap-1 border-line text-ink-subtle opacity-50")} aria-hidden>
-          Older <ChevronRightIcon size={16} />
-        </span>
-      )}
+      ) : null}
     </nav>
   );
 }

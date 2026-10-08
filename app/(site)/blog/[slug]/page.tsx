@@ -43,7 +43,7 @@ async function ArticleContent({ params }: { params: PageProps<"/blog/[slug]">["p
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const [related, settings] = await Promise.all([getRelatedArticles(article, 4), getSettings()]);
+  const [related, settings] = await Promise.all([getRelatedArticles(article, 3), getSettings()]);
   const toc = getTableOfContents(article);
   const url = absoluteUrl(articleHref(article.slug));
 
@@ -58,7 +58,7 @@ async function ArticleContent({ params }: { params: PageProps<"/blog/[slug]">["p
         ])}
       />
       <ViewTracker slug={article.slug} />
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] lg:gap-12">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10">
         <article className="min-w-0">
           <ArticleHeader
             title={article.title}
@@ -76,7 +76,7 @@ async function ArticleContent({ params }: { params: PageProps<"/blog/[slug]">["p
                   { label: article.categoryInfo.name, href: categoryHref(article.category) },
                   { label: article.title },
                 ]}
-                className="mb-4"
+                className="!mb-3"
               />
             }
             actions={<ShareActions url={url} title={article.title} />}
@@ -113,7 +113,7 @@ async function ArticleContent({ params }: { params: PageProps<"/blog/[slug]">["p
           <AdSlot placement="article-end" />
 
           <div className="mt-12">
-            <RelatedArticles articles={related} columns={2} />
+            <RelatedArticles articles={related} columns={3} />
           </div>
         </article>
 

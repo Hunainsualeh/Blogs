@@ -44,14 +44,13 @@ export function DesktopNavigation({ items, categories, className }: DesktopNavig
 
   const linkClasses = (active: boolean) =>
     cn(
-      "relative inline-flex h-16 items-center px-3 text-[14.5px] font-medium transition-colors",
-      "after:absolute after:inset-x-3 after:bottom-0 after:h-[2px] after:bg-brand after:transition-opacity",
-      active ? "text-brand after:opacity-100" : "text-ink-muted after:opacity-0 hover:text-ink hover:after:opacity-100",
+      "inline-flex h-[52px] items-center px-4 text-[13.5px] font-semibold uppercase tracking-wide text-white transition-colors",
+      active ? "bg-brand" : "hover:bg-white/10",
     );
 
   return (
     <nav aria-label="Main" className={className}>
-      <ul className="flex items-center">
+      <ul className="flex items-stretch">
         {items.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           if (item.href === "/categories") {
@@ -68,7 +67,7 @@ export function DesktopNavigation({ items, categories, className }: DesktopNavig
                   <ChevronDownIcon size={14} className={cn("transition-transform", open && "rotate-180")} />
                 </button>
                 {open ? (
-                  <div id={menuId} className="absolute left-1/2 top-full z-50 w-[520px] -translate-x-1/2 rounded-md border border-line bg-white p-3 shadow-[0_16px_40px_-20px_rgba(0,27,61,0.35)]">
+                  <div id={menuId} className="absolute left-0 top-full z-50 w-[520px] border border-line bg-white p-3 text-ink shadow-[0_16px_40px_-20px_rgba(0,0,0,0.4)]">
                     <ul className="grid grid-cols-2 gap-x-2">
                       {categories.map((category) => (
                         <li key={category.slug}>

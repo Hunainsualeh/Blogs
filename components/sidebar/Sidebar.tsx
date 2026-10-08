@@ -13,22 +13,19 @@ type SidebarProps = {
 };
 
 export async function Sidebar({ variant, excludeSlug, activeCategory, className }: SidebarProps) {
-  const [recent, popular] = await Promise.all([
-    getLatestArticles(5, excludeSlug ? [excludeSlug] : []),
-    getPopularArticles(excludeSlug ? 6 : 5),
-  ]);
+  const [recent, popular] = await Promise.all([getLatestArticles(5, excludeSlug ? [excludeSlug] : []), getPopularArticles(6)]);
   const popularList = popular.filter((article) => article.slug !== excludeSlug).slice(0, 5);
   return (
     <aside aria-label="Sidebar" className={className}>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-9">
+        <SidebarWidget title={variant === "archive" ? "Trending Now" : "Popular Posts"}>
+          <PostList articles={popularList} ranked />
+        </SidebarWidget>
+        <AdSlot placement={variant === "article" ? "article-sidebar" : "archive-sidebar"} className="!my-0" />
         <SidebarWidget title="Recent Posts">
           <PostList articles={recent} />
         </SidebarWidget>
-        <SidebarWidget title="Popular Posts">
-          <PostList articles={popularList} ranked />
-        </SidebarWidget>
         <CategoriesWidget activeSlug={activeCategory} />
-        <AdSlot placement={variant === "article" ? "article-sidebar" : "archive-sidebar"} className="!my-0 hidden lg:block" />
         {variant === "archive" ? <WriteForUsCard /> : null}
       </div>
     </aside>

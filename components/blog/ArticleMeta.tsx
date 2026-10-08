@@ -1,9 +1,8 @@
-import Image from "next/image";
 import { cn, formatDate } from "@/lib/utils";
+import { ClockIcon } from "@/components/ui/Icons";
 
 type ArticleMetaProps = {
   authorName?: string;
-  authorAvatar?: string;
   publishedAt?: string;
   readingTime?: number;
   inverse?: boolean;
@@ -11,25 +10,17 @@ type ArticleMetaProps = {
   className?: string;
 };
 
-export function ArticleMeta({ authorName, authorAvatar, publishedAt, readingTime, inverse = false, size = "sm", className }: ArticleMetaProps) {
-  const items: string[] = [];
-  if (publishedAt) items.push(formatDate(publishedAt));
-  if (readingTime) items.push(`${readingTime} min read`);
-
+export function ArticleMeta({ authorName, publishedAt, readingTime, inverse = false, size = "sm", className }: ArticleMetaProps) {
   return (
-    <div className={cn("flex flex-wrap items-center gap-x-2 gap-y-1", size === "sm" ? "text-[13px]" : "text-sm", inverse ? "text-white/80" : "text-ink-subtle", className)}>
-      {authorAvatar ? (
-        <span className="relative h-6 w-6 overflow-hidden rounded-full bg-surface-muted">
-          <Image src={authorAvatar} alt="" fill sizes="24px" className="object-cover" />
+    <div className={cn("flex flex-wrap items-center gap-x-3 gap-y-1", size === "sm" ? "text-[12.5px]" : "text-[13.5px]", inverse ? "text-white/85" : "text-ink-subtle", className)}>
+      {authorName ? <span className={cn("font-medium", inverse ? "text-white" : "text-ink-muted")}>{authorName}</span> : null}
+      {publishedAt ? (
+        <span className="inline-flex items-center gap-1">
+          <ClockIcon size={13} />
+          <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
         </span>
       ) : null}
-      {authorName ? <span className={cn("font-medium", inverse ? "text-white" : "text-ink")}>{authorName}</span> : null}
-      {items.map((item) => (
-        <span key={item} className="flex items-center gap-2">
-          <span aria-hidden className={cn("h-0.5 w-0.5 rounded-full", inverse ? "bg-white/60" : "bg-ink-subtle")} />
-          {item}
-        </span>
-      ))}
+      {readingTime ? <span>{readingTime} min read</span> : null}
     </div>
   );
 }

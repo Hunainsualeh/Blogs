@@ -1,13 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import type { AdPlacementId, AdSettings } from "@/types/settings";
 import { adPlacementCatalog } from "@/lib/settings-defaults";
 import { Input } from "@/components/forms/Input";
 import { Select } from "@/components/forms/Select";
 import { Textarea } from "@/components/forms/Textarea";
 import { Button } from "@/components/ui/Button";
+import { readAdPreview, subscribeAdPreview, writeAdPreview } from "@/components/ads/adPreviewStore";
 import { adminRequest } from "./api";
 
 type Status = { runtime: "live" | "test" | "off"; scriptActive: boolean; adsTxt: string | null };
@@ -16,6 +17,7 @@ export function AdSettingsForm({ initial, status }: { initial: AdSettings; statu
   const router = useRouter();
   const [ads, setAds] = useState(initial);
   const [excluded, setExcluded] = useState(initial.autoAdsExcludedPaths.join("\n"));
+  const preview = useSyncExternalStore(subscribeAdPreview, readAdPreview, () => false);
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
@@ -52,6 +54,12 @@ export function AdSettingsForm({ initial, status }: { initial: AdSettings; statu
         <p className="mt-2"><strong className="text-ink">AdSense script:</strong> {status.scriptActive ? "will be loaded on eligible pages" : "will not be loaded"}</p>
         <p className="mt-2"><strong className="text-ink">ads.txt:</strong> {status.adsTxt ? <code className="rounded-sm bg-surface-muted px-1.5 py-0.5 text-ink">{status.adsTxt}</code> : "not published until a valid publisher ID is saved"}</p>
         <p className="mt-3">Placements that are switched off, or that have no valid slot ID, render nothing. No empty ad boxes are shown to visitors.</p>
+      </section>
+
+      <section className="rounded-md border border-line bg-white p-5">
+        <h2 className="text-[16px] font-semibold text-ink">Preview ad positions</h2>
+        <p className="mt-2 text-sm text-ink-muted">Shows dashed placeholder boxes on the public site where ads can appear. It works only in this browser and visitors never see it. Placements that are live show real ads instead.</p>
+        <label className="mt-3 flex items-center gap-2 text-sm text-ink"><input type="checkbox" checked={preview} onChange={(event) => writeAdPreview(event.target.checked)} /> Show ad position previews in this browser</label>
       </section>
 
       <section className="space-y-5 rounded-md border border-line bg-white p-5">
