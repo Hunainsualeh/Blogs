@@ -4,7 +4,7 @@ import path from "node:path";
 
 const kvUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
 const kvToken = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
-const dataDir = process.env.DATA_DIR ?? path.join(process.cwd(), ".data");
+const dataDir = process.env.DATA_DIR ?? (process.env.VERCEL ? path.join("/tmp", "gid-data") : path.join(process.cwd(), ".data"));
 
 export const storageMode: "kv" | "file" = kvUrl && kvToken ? "kv" : "file";
 
